@@ -24,7 +24,7 @@ HW	File.py	/^    HW = 0$/;"	v	class:FILE_TYPE
 HWFile	File.py	/^class HWFile(File):$/;"	c
 InfoDescriptor	File.py	/^class InfoDescriptor:$/;"	c
 JSON_DIR	Settings.py	/^JSON_DIR = root_dir \/ 'json'$/;"	v
-NOTES	File.py	/^    NOTES = 2$/;"	v	class:FILE_TYPE
+NOTE	File.py	/^    NOTE = 2$/;"	v	class:FILE_TYPE
 Syllabus	CourseInfo.py	/^class Syllabus:$/;"	c
 __cmp__	CourseInfo.py	/^    def __cmp__(self, other):$/;"	m	class:CourseInfo
 __eq__	CourseInfo.py	/^    def __eq__(self, other):$/;"	m	class:CourseInfo

@@ -7,7 +7,7 @@ FILE_JSON_DIR = JSON_DIR / 'files'
 class FILE_TYPE(Enum):
     HW = 0
     ASSIGNMENT = 1
-    NOTES = 2
+    NOTE = 2
 
 
 class File(object):
