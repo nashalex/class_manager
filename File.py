@@ -1,13 +1,15 @@
 from Enum import Enum
+from copy import deepcopy
+import json
 import CourseInfo
 from Settings import JSON_DIR, COURSE_DIR, root_dir
 FILE_JSON_DIR = JSON_DIR / 'files'
 
 
 class FILE_TYPE(Enum):
-    HW = 0
-    ASSIGNMENT = 1
-    NOTE = 2
+    note = 0
+    hw = 1
+    assignment = 2
 
 
 class File(object):
@@ -28,7 +30,19 @@ class File(object):
         self.location = course_dir / str(self.file_type) / f'{self.number}.tex'
 
     def json_location(self):
+        """Return the location of this File's associated json file"""
         return FILE_JSON_DIR / self.course_identifier / str(self.file_type) / f'{self.number}.json'
+
+    def get_latex_header(self):
+        """Method that returns a string corresponding to this File's latex header"""
+
+    def write_json_file(self):
+        """Write to the json file associated with this File"""
+        with open(self.json_location(), 'w') as file:
+            json_vars = deepcopy(vars(self))
+            for k in ('course_info', 'location'):
+                del json_vars[k]  # json_vars.pop(k, None)
+            json.dump(json_vars, file)
 
 
 class InfoDescriptor:

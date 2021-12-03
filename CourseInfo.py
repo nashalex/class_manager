@@ -32,9 +32,9 @@ class CourseInfo:
         get_course_directory(self.identifier).mkdir()
         get_json_location(self.identifier).touch()
 
-    def make_json_file(self):
+    def write_json_file(self):
         with open(get_json_location(self.identifier), 'w') as file:
-            json_vars = deepcopy(dict(self))
+            json_vars = deepcopy(vars(self))
             for k in ('identifier', 'syllabus'):
                 json_vars.pop(k, None)
             json.dump(json_vars, file)
