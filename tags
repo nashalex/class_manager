@@ -1,0 +1,48 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/Users/alex/Documents/GitHub/classman3/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/a0dd591f/
+ASSIGNMENT	File.py	/^    ASSIGNMENT = 1$/;"	v	class:FILE_TYPE
+COURSE_DIR	Settings.py	/^COURSE_DIR = root_dir \/ 'Courses'$/;"	v
+COURSE_JSON_DIR	CourseInfo.py	/^COURSE_JSON_DIR = JSON_DIR \/ 'courses'$/;"	v
+Course	Course.py	/^class Course(object):$/;"	c
+CourseInfo	CourseInfo.py	/^class CourseInfo:$/;"	c
+CourseInfo_from_identifier	CourseInfo.py	/^def CourseInfo_from_identifier(identifier: str) -> CourseInfo:$/;"	f	typeref:typename:CourseInfo
+CourseInfo_from_json	CourseInfo.py	/^def CourseInfo_from_json(file_path: Path or str):$/;"	f
+FILE_JSON_DIR	File.py	/^FILE_JSON_DIR = JSON_DIR \/ 'files'$/;"	v
+FILE_TYPE	File.py	/^class FILE_TYPE(Enum):$/;"	c
+File	File.py	/^class File(object):$/;"	c
+Files	Course.py	/^class Files:$/;"	c
+HW	File.py	/^    HW = 0$/;"	v	class:FILE_TYPE
+HWFile	File.py	/^class HWFile(File):$/;"	c
+InfoDescriptor	File.py	/^class InfoDescriptor:$/;"	c
+JSON_DIR	Settings.py	/^JSON_DIR = root_dir \/ 'json'$/;"	v
+NOTES	File.py	/^    NOTES = 2$/;"	v	class:FILE_TYPE
+Syllabus	CourseInfo.py	/^class Syllabus:$/;"	c
+__cmp__	CourseInfo.py	/^    def __cmp__(self, other):$/;"	m	class:CourseInfo
+__eq__	CourseInfo.py	/^    def __eq__(self, other):$/;"	m	class:CourseInfo
+__ge__	CourseInfo.py	/^    def __ge__(self, other):$/;"	m	class:CourseInfo
+__get__	Course.py	/^    def __get__(self, owner: Course):$/;"	m	class:Files
+__get__	CourseInfo.py	/^    def __get__(self, owner: CourseInfo, objtype=None):$/;"	m	class:Syllabus
+__get__	File.py	/^    def __get__(self, owner: File):$/;"	m	class:InfoDescriptor
+__gt__	CourseInfo.py	/^    def __gt__(self, other):$/;"	m	class:CourseInfo
+__init__	Course.py	/^    def __init__(self, course_info: CourseInfo.CourseInfo = None, json_file: Path or str = None)/;"	m	class:Course
+__init__	File.py	/^    def __init__(self, file_type, number, course_identifier):$/;"	m	class:File
+__init__	File.py	/^    def __init__(self, number, course_identifier):$/;"	m	class:HWFile
+__le__	CourseInfo.py	/^    def __le__(self, other):$/;"	m	class:CourseInfo
+__lt__	CourseInfo.py	/^    def __lt__(self, other):$/;"	m	class:CourseInfo
+__ne__	CourseInfo.py	/^    def __ne__(self, other):$/;"	m	class:CourseInfo
+__post_init__	CourseInfo.py	/^    def __post_init__(self):$/;"	m	class:CourseInfo
+_ct	CourseInfo.py	/^    def _ct(self):$/;"	m	class:CourseInfo
+get_course_directory	CourseInfo.py	/^def get_course_directory(identifier: str) -> Path:$/;"	f	typeref:typename:Path
+get_json_location	CourseInfo.py	/^def get_json_location(identifier: str) -> Path:$/;"	f	typeref:typename:Path
+json_location	File.py	/^    def json_location(self):$/;"	m	class:File
+make_json_file	CourseInfo.py	/^    def make_json_file(self):$/;"	m	class:CourseInfo
+root_dir	Settings.py	/^root_dir = Path.home() \/ 'class_man'$/;"	v
