@@ -67,6 +67,10 @@ def parse_header(header: str):
 
 
 def TexFile_from_path(texfile_path):
+    """Create and return an existing TexFile from the location of a tex file
+    """
+    # TODO change the way this works so that it pulls year from JSON file if it exists
+    # TODO add something to Course.py that calls this on all files in a course directory, updating the relevant json files
     course_identifier = texfile_path.parent.parent.name
     with open(texfile_path, 'r') as file:
         header = file.readline().strip()
