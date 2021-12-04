@@ -16,8 +16,10 @@ CourseInfo	CourseInfo.py	/^class CourseInfo:$/;"	c
 CourseInfo_from_identifier	CourseInfo.py	/^def CourseInfo_from_identifier(identifier: str) -> CourseInfo:$/;"	f	typeref:typename:CourseInfo
 CourseInfo_from_json	CourseInfo.py	/^def CourseInfo_from_json(file_path: Path or str):$/;"	f
 FILE_JSON_DIR	File.py	/^FILE_JSON_DIR = JSON_DIR \/ 'files'$/;"	v
+FT	Course.py	/^from File import FileType as FT$/;"	x	nameref:unknown:FileType
 FileType	File.py	/^class FileType(Enum):$/;"	c
 JSON_DIR	Settings.py	/^JSON_DIR = root_dir \/ 'json'$/;"	v
+TFile	Course.py	/^from File import TexFile as TFile$/;"	x	nameref:unknown:TexFile
 TexFile	File.py	/^class TexFile(object):$/;"	c
 TexFile_from_json	File.py	/^def TexFile_from_json(file_path: Path or str):$/;"	f
 TexFilesDescriptor	Course.py	/^class TexFilesDescriptor:$/;"	c
@@ -33,6 +35,7 @@ __str__	Course.py	/^    def __str__(self):$/;"	m	class:Course
 __str__	CourseInfo.py	/^    def __str__(self):$/;"	m	class:CourseInfo
 __str__	File.py	/^    def __str__(self):$/;"	m	class:TexFile
 _ct	CourseInfo.py	/^    def _ct(self):$/;"	m	class:CourseInfo
+active	File.py	/^    active: bool = True$/;"	v	class:TexFile	typeref:typename:bool
 assignment	File.py	/^    assignment = 2$/;"	v	class:FileType
 c	Course.py	/^    c = Course('COMP332D')$/;"	v
 ci	CourseInfo.py	/^    ci = CourseInfo(year=2021, semester='Fall', department='COMP', number=332,$/;"	v
@@ -42,21 +45,27 @@ files	Course.py	/^    files = TexFilesDescriptor()$/;"	v	class:Course
 formatted_date	File.py	/^    def formatted_date(self):$/;"	m	class:TexFile
 get_course_directory	CourseInfo.py	/^def get_course_directory(identifier: str) -> Path:$/;"	f	typeref:typename:Path
 get_course_files	File.py	/^def get_course_files(course_identifier: str,$/;"	f	typeref:typename:list[Path]
-get_file_directory	File.py	/^def get_file_directory(course_identifier: str, file_type: FileType):$/;"	f
+get_file	Course.py	/^    def get_file(self, ft: FT, number: int):$/;"	m	class:Course
+get_file_directory	File.py	/^def get_file_directory(course_identifier: str, file_type: FileType, title: str = None):$/;"	f
 get_json_location	CourseInfo.py	/^def get_json_location(identifier: str) -> Path:$/;"	f	typeref:typename:Path
 get_latex_header	File.py	/^    def get_latex_header(self):$/;"	m	class:TexFile
 get_syllabus	CourseInfo.py	/^    def get_syllabus(self):$/;"	m	class:CourseInfo
 homework	File.py	/^    homework = 1$/;"	v	class:FileType
+include_str	File.py	/^    def include_str(self):$/;"	m	class:TexFile
 json_directory	File.py	/^def json_directory(course_identifier: str, file_type: FileType) -> Path:$/;"	f	typeref:typename:Path
-largest_file_number	Course.py	/^    def largest_file_number(self, file_type: File.FileType):$/;"	m	class:Course
+largest_file_number	Course.py	/^    def largest_file_number(self, file_type: FT):$/;"	m	class:Course
 loc	File.py	/^    loc = t.json_location$/;"	v
-new_tex_file	Course.py	/^    def new_tex_file(self, file_type: File.FileType):$/;"	m	class:Course
+new_tex_file	Course.py	/^    def new_tex_file(self, file_type: FT):$/;"	m	class:Course
 note	File.py	/^    note = 0$/;"	v	class:FileType
 root_dir	Settings.py	/^root_dir = Path.home() \/ 'class_man'$/;"	v
-subdir_name	File.py	/^def subdir_name(file_type: FileType) -> str:$/;"	f	typeref:typename:str
-t	File.py	/^    t = TexFile("COMP332D", FileType.homework, 11)$/;"	v
+set_active	File.py	/^    def set_active(self, Bool: bool = True):$/;"	m	class:TexFile
+set_active_files	Course.py	/^    def set_active_files(self, to_activate=TFile or list[TFile]$/;"	m	class:Course
+subdir_name	File.py	/^def subdir_name(file_type: FileType, title: str = None) -> str:$/;"	f	typeref:typename:str
+t	File.py	/^    t = TexFile("COMP332D", FileType.homework, 1)$/;"	v
 t2	File.py	/^    t2 = TexFile_from_json(loc)$/;"	v
 title	File.py	/^    title: str = None$/;"	v	class:TexFile	typeref:typename:str
+type_and_num	File.py	/^    def type_and_num(self):$/;"	m	class:TexFile
+update_active_files	Course.py	/^    def update_active_files(self):$/;"	m	class:Course
 write_file	File.py	/^    def write_file(self):$/;"	m	class:TexFile
 write_json	CourseInfo.py	/^    def write_json(self):$/;"	m	class:CourseInfo
 write_json	File.py	/^    def write_json(self):$/;"	m	class:TexFile

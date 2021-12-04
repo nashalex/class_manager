@@ -19,11 +19,16 @@ class FileType(Enum):
     assignment = 2
 
 
-def subdir_name(file_type: FileType) -> str:
+def subdir_name(file_type: FileType, title: str = None) -> str:
     """Get the subdirectory name of a specific FileType
 
     """
-    return 'hw' if file_type == FileType.homework else file_type.name + "s"
+    if file_type == FileType.homework:
+        return 'hw'
+    elif file_type == FileType.assignment and title:
+        return title.lower()
+    else:
+        return file_type.name + "s"
 
 
 def json_directory(course_identifier: str, file_type: FileType) -> Path:
@@ -39,7 +44,7 @@ def json_directory(course_identifier: str, file_type: FileType) -> Path:
     return FILE_JSON_DIR / course_identifier / subdir_name(file_type)
 
 
-def get_file_directory(course_identifier: str, file_type: FileType):
+def get_file_directory(course_identifier: str, file_type: FileType, title: str = None):
     """Get the directory of all files of a course, of type FileType"""
 
     course_dir = CourseInfo.get_course_directory(course_identifier)
@@ -92,6 +97,7 @@ class TexFile(object):
     number: int
     title: str = None
     file_date: date or str = date.today()
+    active: bool = True
 
     def __post_init__(self):
         """Create a new TexFile object """
@@ -104,10 +110,10 @@ class TexFile(object):
             self.file_type = FileType[self.file_type]
 
         self.location = get_file_directory(
-            self.course_identifier, self.file_type) / f'{self.number}.tex'
+            self.course_identifier, self.file_type, self.title) / f'{self.number:02d}.tex'
 
         self.json_location = json_directory(
-            self.course_identifier, self.file_type) / f'{self.number}.json'
+            self.course_identifier, self.file_type) / f'{self.number:02d}.json'
 
         if not self.json_location.parent.exists():
             self.json_location.parent.mkdir(parents=True)
@@ -124,15 +130,12 @@ class TexFile(object):
         """Method that returns a string corresponding to this TexFile's latex header"""
 
         if self.file_type == FileType.homework:
-            return f'\\{self.file_type.name}{{{self.number}}}{{{self.formatted_date()}}}'
+            return f'\\{self.file_type.name}{{{self.number:02d}}}{{{self.formatted_date()}}}'
         else:
-            return f'\\{self.file_type.name}{{{self.number}}}{{{self.formatted_date()}}}{{{self.title}}}'
+            return f'\\{self.file_type.name}{{{self.number:02d}}}{{{self.formatted_date()}}}{{{self.title}}}'
 
     def write_json(self):
         """Write to the json file associated with this TexFile"""
-        if self.json_location.exists():
-            return
-
         with open(self.json_location, 'w') as file:
             json_vars = deepcopy(vars(self))
             for k in ('location', 'json_location'):
@@ -148,6 +151,16 @@ class TexFile(object):
 
         with open(self.location, 'w') as f:
             f.write(self.get_latex_header())
+
+    def set_active(self, Bool: bool = True):
+        self.active = Bool
+        self.write_json()
+
+    def include_str(self):
+        return '/'.join(list(self.location.parts)[-2:])
+
+    def type_and_num(self):
+        return self.file_type, self.number
 
     def ct(self):
         return (self.course_identifier, self.file_type, self.number, self.file_date)
@@ -166,7 +179,7 @@ class TexFile(object):
 
 
 if __name__ == "__main__":
-    t = TexFile("COMP332D", FileType.homework, 11)
+    t = TexFile("COMP332D", FileType.homework, 1)
     t.write_file()
     print(t)
     loc = t.json_location
