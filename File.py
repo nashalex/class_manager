@@ -1,4 +1,5 @@
 from datetime import date
+import re
 from functools import total_ordering
 from dataclasses import dataclass
 from enum import Enum
@@ -7,8 +8,11 @@ from pathlib import Path
 import json
 import CourseInfo
 from Settings import JSON_DIR, COURSE_DIR, root_dir
+from datetime import datetime
 
 FILE_JSON_DIR = JSON_DIR / 'files'
+
+header_pattern = re.compile(r'\\(.*?){(\d+)}{(\w{3} \d{2})}(?:{(.*?)})?')
 
 
 class FileType(Enum):
@@ -19,13 +23,13 @@ class FileType(Enum):
     assignment = 2
 
 
-def subdir_name(file_type: FileType, title: str = None) -> str:
+def subdir_name(file_type: FileType, title: str = '') -> str:
     """Get the subdirectory name of a specific FileType
 
     """
     if file_type == FileType.homework:
         return 'hw'
-    elif file_type == FileType.assignment and title:
+    elif file_type == FileType.assignment and len(title) > 0:
         return title.lower()
     else:
         return file_type.name + "s"
@@ -44,34 +48,31 @@ def json_directory(course_identifier: str, file_type: FileType) -> Path:
     return FILE_JSON_DIR / course_identifier / subdir_name(file_type)
 
 
-def get_file_directory(course_identifier: str, file_type: FileType, title: str = None):
+def get_file_directory(course_identifier: str, file_type: FileType, title: str = ''):
     """Get the directory of all files of a course, of type FileType"""
 
     course_dir = CourseInfo.get_course_directory(course_identifier)
-    return course_dir / subdir_name(file_type)
+    return course_dir / subdir_name(file_type, title)
 
 
-def get_course_files(course_identifier: str,
-                     file_types: FileType or list[FileType] = FileType) -> list[Path]:
-    """Returns a list all TexFiles of a specified course
+def parse_header(header: str):
+    # \[file_type]{number}{date}{title}
+    match = header_pattern.match(header)
+    file_type = FileType[match[1]]
+    number = int(match[2])
+    file_date = datetime.strptime(
+        match[3], '%b %d').date().replace(year=date.today().year)
+    title = match[4] if match[4] else ''
+    return {'file_type': file_type, 'number': number, 'file_date': file_date, 'title': title}
 
-    Parameters
-    ----------
-        course_identifier: str
-            The course to get files from.
-        file_types: FileType or list[FileType]
-            Limit search to only the files of type FileType.
-            Default: all file types.
-    """
 
-    if type(file_types) is FileType:
-        file_types = [file_types]
-    files = []
-    for ft in file_types:
-        directory = json_directory(course_identifier, ft)
-        json_paths = list(directory.glob('*'))
-        files.extend([TexFile_from_json(jp) for jp in json_paths])
-    return files
+def TexFile_from_path(texfile_path):
+    course_identifier = texfile_path.parent.parent.name
+    with open(texfile_path, 'r') as file:
+        header = file.readline().strip()
+    header_vars = parse_header(header)
+    tf = TexFile(course_identifier=course_identifier, **header_vars)
+    return tf
 
 
 def TexFile_from_json(file_path: Path or str):
@@ -95,12 +96,14 @@ class TexFile(object):
     course_identifier: str
     file_type: FileType or str
     number: int
-    title: str = None
+    title: str = ''
     file_date: date or str = date.today()
     active: bool = True
 
     def __post_init__(self):
         """Create a new TexFile object """
+        if self.title == None:
+            self.title = ''
 
         # if loaded from json this will have happened:
         if type(self.file_date) is str:
@@ -163,18 +166,23 @@ class TexFile(object):
         return self.file_type, self.number
 
     def ct(self):
-        return (self.course_identifier, self.file_type, self.number, self.file_date)
+        # return (self.course_identifier, self.file_type, self.number, self.file_date)
+        return (self.file_type, self.number, self.title)
 
     def __eq__(self, other):
-        return self.ct() == other.ct()
+        ct = other.ct() if type(other) is TexFile else other
+        return self.ct() == ct
 
     def __lt__(self, other):
-        return self.ct() < other.ct()
+        ct = other.ct() if type(other) is TexFile else other
+        return self.ct() < ct
 
     def __str__(self):
         s = f'{self.course_identifier} {self.file_type.name} {self.number}'
-        if self.title:
+        if len(self.title) > 0:
             s += f': {self.title}'
+        if self.active:
+            s += '  (active)'
         return s
 
 
@@ -186,4 +194,8 @@ if __name__ == "__main__":
     print(loc)
     t2 = TexFile_from_json(loc)
     print(t2)
-    print(get_course_files('COMP332D', FileType.assignment))
+    loc2 = t.location
+    t3 = TexFile_from_path(loc2)
+    print("seeing how to generate from a location")
+    print(t3)
+    # print(get_course_files('COMP332D', FileType.assignment))

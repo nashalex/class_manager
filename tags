@@ -22,6 +22,7 @@ JSON_DIR	Settings.py	/^JSON_DIR = root_dir \/ 'json'$/;"	v
 TFile	Course.py	/^from File import TexFile as TFile$/;"	x	nameref:unknown:TexFile
 TexFile	File.py	/^class TexFile(object):$/;"	c
 TexFile_from_json	File.py	/^def TexFile_from_json(file_path: Path or str):$/;"	f
+TexFile_from_path	File.py	/^def TexFile_from_path(texfile_path):$/;"	f
 TexFilesDescriptor	Course.py	/^class TexFilesDescriptor:$/;"	c
 __eq__	CourseInfo.py	/^    def __eq__(self, other):$/;"	m	class:CourseInfo
 __eq__	File.py	/^    def __eq__(self, other):$/;"	m	class:TexFile
@@ -44,26 +45,31 @@ ct	File.py	/^    def ct(self):$/;"	m	class:TexFile
 files	Course.py	/^    files = TexFilesDescriptor()$/;"	v	class:Course
 formatted_date	File.py	/^    def formatted_date(self):$/;"	m	class:TexFile
 get_course_directory	CourseInfo.py	/^def get_course_directory(identifier: str) -> Path:$/;"	f	typeref:typename:Path
-get_course_files	File.py	/^def get_course_files(course_identifier: str,$/;"	f	typeref:typename:list[Path]
-get_file	Course.py	/^    def get_file(self, ft: FT, number: int):$/;"	m	class:Course
-get_file_directory	File.py	/^def get_file_directory(course_identifier: str, file_type: FileType, title: str = None):$/;"	f
+get_course_files	Course.py	/^def get_course_files(course_identifier: str,$/;"	f	typeref:typename:list[Path]
+get_file	Course.py	/^    def get_file(self, ft: FT, number: int, title: str = ''):$/;"	m	class:Course
+get_file_directory	File.py	/^def get_file_directory(course_identifier: str, file_type: FileType, title: str = ''):$/;"	f
 get_json_location	CourseInfo.py	/^def get_json_location(identifier: str) -> Path:$/;"	f	typeref:typename:Path
 get_latex_header	File.py	/^    def get_latex_header(self):$/;"	m	class:TexFile
 get_syllabus	CourseInfo.py	/^    def get_syllabus(self):$/;"	m	class:CourseInfo
+header_pattern	File.py	/^header_pattern = re.compile(r'\\\\(.*?){(\\d+)}{(\\w{3} \\d{2})}(?:{(.*?)})?')$/;"	v
 homework	File.py	/^    homework = 1$/;"	v	class:FileType
 include_str	File.py	/^    def include_str(self):$/;"	m	class:TexFile
 json_directory	File.py	/^def json_directory(course_identifier: str, file_type: FileType) -> Path:$/;"	f	typeref:typename:Path
 largest_file_number	Course.py	/^    def largest_file_number(self, file_type: FT):$/;"	m	class:Course
 loc	File.py	/^    loc = t.json_location$/;"	v
+loc2	File.py	/^    loc2 = t.location$/;"	v
+make_master	Course.py	/^    def make_master(self):$/;"	m	class:Course
 new_tex_file	Course.py	/^    def new_tex_file(self, file_type: FT):$/;"	m	class:Course
 note	File.py	/^    note = 0$/;"	v	class:FileType
+parse_header	File.py	/^def parse_header(header: str):$/;"	f
 root_dir	Settings.py	/^root_dir = Path.home() \/ 'class_man'$/;"	v
 set_active	File.py	/^    def set_active(self, Bool: bool = True):$/;"	m	class:TexFile
 set_active_files	Course.py	/^    def set_active_files(self, to_activate=TFile or list[TFile]$/;"	m	class:Course
-subdir_name	File.py	/^def subdir_name(file_type: FileType, title: str = None) -> str:$/;"	f	typeref:typename:str
+subdir_name	File.py	/^def subdir_name(file_type: FileType, title: str = '') -> str:$/;"	f	typeref:typename:str
 t	File.py	/^    t = TexFile("COMP332D", FileType.homework, 1)$/;"	v
 t2	File.py	/^    t2 = TexFile_from_json(loc)$/;"	v
-title	File.py	/^    title: str = None$/;"	v	class:TexFile	typeref:typename:str
+t3	File.py	/^    t3 = TexFile_from_path(loc2)$/;"	v
+title	File.py	/^    title: str = ''$/;"	v	class:TexFile	typeref:typename:str
 type_and_num	File.py	/^    def type_and_num(self):$/;"	m	class:TexFile
 update_active_files	Course.py	/^    def update_active_files(self):$/;"	m	class:Course
 write_file	File.py	/^    def write_file(self):$/;"	m	class:TexFile

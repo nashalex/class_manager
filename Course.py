@@ -6,11 +6,34 @@ from File import FileType as FT
 from File import TexFile as TFile
 
 
+def get_course_files(course_identifier: str,
+                     file_types: FT or list[FT] = FT) -> list[Path]:
+    """Returns a list all TexFiles of a specified course
+
+    Parameters
+    ----------
+        course_identifier: str
+            The course to get files from.
+        file_types: FileType or list[FileType]
+            Limit search to only the files of type FileType.
+            Default: all file types.
+    """
+
+    if type(file_types) is FT:
+        file_types = [file_types]
+    files = []
+    for ft in file_types:
+        directory = File.json_directory(course_identifier, ft)
+        json_paths = list(directory.glob('*'))
+        files.extend([File.TexFile_from_json(jp) for jp in json_paths])
+    return files
+
+
 class TexFilesDescriptor:
     """File Descriptor class that retrives files"""
 
     def __get__(self, owner, objtype=None):
-        return sorted(File.get_course_files(owner.course_info.identifier))
+        return sorted(get_course_files(owner.course_info.identifier))
 
 
 class Course(object):
@@ -37,12 +60,13 @@ class Course(object):
                 course_info)
         self.master_file_location = self.course_info.directory / 'master.tex'
         self.active_files_file = self.course_info.directory / 'active_files.tex'
+        self.make_master()
 
     def __str__(self):
         return str(self.course_info)
 
     def largest_file_number(self, file_type: FT):
-        return max(f.number for f in self.files if f.file_type == file_type)
+        return max((f.number for f in self.files if f.file_type == file_type or 0), default=0)
         # filtered = filter(lambda f: f.file_type == file_type, self.files)
         # return max(filtered, key=lambda f: f.number).number
 
@@ -56,9 +80,9 @@ class Course(object):
         # if type(files) is TFile:
         # files = [files]
 
-    def get_file(self, ft: FT, number: int):
+    def get_file(self, ft: FT, number: int, title: str = ''):
         """get a file from its file_type and number"""
-        return next(f for f in self.files if f.type_and_num() == (ft, number))
+        return next((f for f in self.files if f == (ft, number, title)), None)
 
     def set_active_files(self, to_activate=TFile or list[TFile]
                          or (FT, int), update=True):
@@ -73,14 +97,14 @@ class Course(object):
     """
         if type(to_activate) is not list:
             to_activate = list[to_activate]
-        if type(to_activate[0]) is TFile:
-            a_tuples = [a.type_and_num() for a in to_activate]
-        else:
-            a_tuples = to_activate
+
+        for i, a in enumerate(to_activate):
+            if type(a) is not TFile:
+                to_activate[i] = self.get_file(*a)
 
         for f in self.files:
             # deactivate it if f is not in active
-            f.set_active(f.type_and_num() in a_tuples)
+            f.set_active(f in to_activate)
         if update:
             self.update_active_files()
 
@@ -90,13 +114,28 @@ class Course(object):
             for active_file in active_files:
                 f.write(f'\\include{{{active_file.include_str()}}}\n')
 
+    def make_master(self):
+        if self.master_file_location.exists():
+            return
+        with open(self.master_file_location, 'w') as file:
+            file.write(r'''\documentclass[a4paper]{article}
+\input{../preamble.tex}
+''' f'\\title{{{self.course_info.title}}}' r'''
+\PassOptionsToPackage{hidelinks}{hyperref}
+\author{Alex Nash}
+\date{\vspace{-3ex}}
+\begin{document}
+    \maketitle
+    \input{active_files.tex}
+\end{document} ''')
+
 
 if __name__ == "__main__":
     c = Course('COMP332D')
     print(c)
-    print(c.files)
+    # print(c.files)
     print('\n'.join(str(f) for f in c.files))
-    print(c.largest_file_number(FT.homework))
+    # print(c.largest_file_number(FT.homework))
     c.new_tex_file(FT.homework)
     print('\n'.join(str(f) for f in c.files))
     print(c.get_file(FT.homework, 15))
