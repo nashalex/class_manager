@@ -48,7 +48,9 @@ get_latex_header	File.py	/^    def get_latex_header(self):$/;"	m	class:TexFile
 get_syllabus	CourseInfo.py	/^    def get_syllabus(self):$/;"	m	class:CourseInfo
 homework	File.py	/^    homework = 1$/;"	v	class:FileType
 json_directory	File.py	/^def json_directory(course_identifier: str, file_type: FileType) -> Path:$/;"	f	typeref:typename:Path
+largest_file_number	Course.py	/^    def largest_file_number(self, file_type: File.FileType):$/;"	m	class:Course
 loc	File.py	/^    loc = t.json_location$/;"	v
+new_tex_file	Course.py	/^    def new_tex_file(self, file_type: File.FileType):$/;"	m	class:Course
 note	File.py	/^    note = 0$/;"	v	class:FileType
 root_dir	Settings.py	/^root_dir = Path.home() \/ 'class_man'$/;"	v
 subdir_name	File.py	/^def subdir_name(file_type: FileType) -> str:$/;"	f	typeref:typename:str
@@ -57,4 +59,4 @@ t2	File.py	/^    t2 = TexFile_from_json(loc)$/;"	v
 title	File.py	/^    title: str = None$/;"	v	class:TexFile	typeref:typename:str
 write_file	File.py	/^    def write_file(self):$/;"	m	class:TexFile
 write_json	CourseInfo.py	/^    def write_json(self):$/;"	m	class:CourseInfo
-write_json_file	File.py	/^    def write_json_file(self):$/;"	m	class:TexFile
+write_json	File.py	/^    def write_json(self):$/;"	m	class:TexFile

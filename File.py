@@ -12,14 +12,17 @@ FILE_JSON_DIR = JSON_DIR / 'files'
 
 
 class FileType(Enum):
-    """Enum for the different types of supported LaTeX files"""
+    """Enum for the different types of supported LaTeX files
+    """
     note = 0
     homework = 1
     assignment = 2
 
 
 def subdir_name(file_type: FileType) -> str:
-    """Get the subdirectory name of a specific FileType"""
+    """Get the subdirectory name of a specific FileType
+
+    """
     return 'hw' if file_type == FileType.homework else file_type.name + "s"
 
 
@@ -111,6 +114,8 @@ class TexFile(object):
 
         if not self.location.parent.exists():
             self.location.parent.mkdir(parents=True)
+        self.write_json()
+        self.write_file()
 
     def formatted_date(self):
         return self.file_date.strftime(r'%b %d')
@@ -123,7 +128,7 @@ class TexFile(object):
         else:
             return f'\\{self.file_type.name}{{{self.number}}}{{{self.formatted_date()}}}{{{self.title}}}'
 
-    def write_json_file(self):
+    def write_json(self):
         """Write to the json file associated with this TexFile"""
         if self.json_location.exists():
             return
@@ -141,7 +146,6 @@ class TexFile(object):
         if self.location.exists():
             return
 
-        self.write_json_file()
         with open(self.location, 'w') as f:
             f.write(self.get_latex_header())
 
@@ -163,7 +167,6 @@ class TexFile(object):
 
 if __name__ == "__main__":
     t = TexFile("COMP332D", FileType.homework, 11)
-    t.write_json_file()
     t.write_file()
     print(t)
     loc = t.json_location

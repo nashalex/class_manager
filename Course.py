@@ -38,8 +38,18 @@ class Course(object):
     def __str__(self):
         return str(self.course_info)
 
+    def largest_file_number(self, file_type: File.FileType):
+        return max(f.number for f in self.files if f.file_type == file_type)
+        # filtered = filter(lambda f: f.file_type == file_type, self.files)
+        # return max(filtered, key=lambda f: f.number).number
+
+    def new_tex_file(self, file_type: File.FileType):
+        f = File.TexFile(course_identifier=self.course_info.identifier,
+                         file_type=file_type, number=1 + self.largest_file_number())
+
 
 if __name__ == "__main__":
     c = Course('COMP332D')
     print(c)
     print(c.files)
+    print(c.largest_file_number(File.FileType.homework))
