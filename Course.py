@@ -61,6 +61,7 @@ class Course:
         self.master_file_location = self.info.directory / 'master.tex'
         self.active_files_file = self.info.directory / 'active_files.tex'
         self.make_master()
+        self.update_active_files()
 
     def __str__(self):
         return str(self.info)
@@ -81,10 +82,6 @@ class Course:
 
     def get_possible_titles(self, file_type: FT):
         return list({f.title for f in self.files if f.file_type == file_type})
-
-    # def update_master(self, files: list[TFile] or TFile):
-        # if type(files) is TFile:
-        # files = [files]
 
     def get_file(self, ft: FT, number: int, title: str = ''):
         """get a file from its file_type and number"""

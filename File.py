@@ -214,9 +214,6 @@ class TexFile(object):
     def include_str(self):
         return '/'.join(list(self.location.parts)[-2:])
 
-    def type_and_num(self):
-        return self.file_type, self.number
-
     def ct(self):
         # return (self.course_identifier, self.file_type, self.number, self.file_date)
         return (self.file_type, self.number, self.title)
