@@ -48,6 +48,26 @@ def json_directory(course_identifier: str, file_type: FileType) -> Path:
     return FILE_JSON_DIR / course_identifier / subdir_name(file_type)
 
 
+def get_location(course_identifier: str, file_type: FileType, number: int, title: str = '', JSON: bool = False):
+    """Get the location of the JSON file for a specific file
+
+    Parameters
+    ----------
+    course_identifier : TODO
+    file_type : TODO
+    number : TODO
+
+    Returns
+    -------
+    TODO
+
+    pass"""
+    if JSON:
+        return json_directory(course_identifier, file_type) / f'{number:02d}.json'
+    else:
+        return get_file_directory(course_identifier, file_type, title) / f'{number:02d}.tex'
+
+
 def get_file_directory(course_identifier: str, file_type: FileType, title: str = ''):
     """Get the directory of all files of a course, of type FileType"""
 
@@ -106,7 +126,7 @@ class TexFile(object):
 
     def __post_init__(self):
         """Create a new TexFile object """
-        if self.title == None:
+        if self.title is None:
             self.title = ''
 
         # if loaded from json this will have happened:
@@ -116,11 +136,13 @@ class TexFile(object):
         if type(self.file_type) is str:
             self.file_type = FileType[self.file_type]
 
-        self.location = get_file_directory(
-            self.course_identifier, self.file_type, self.title) / f'{self.number:02d}.tex'
+        self.location = get_location(
+            self.course_identifier, self.file_type, self.number, self.title, JSON=False)
+        # get_file_directory( self.course_identifier, self.file_type, self.title) / f'{self.number:02d}.tex'
 
-        self.json_location = json_directory(
-            self.course_identifier, self.file_type) / f'{self.number:02d}.json'
+        self.json_location = get_location(
+            self.course_identifier, self.file_type, self.number, JSON=True)
+        # json_directory( self.course_identifier, self.file_type) / f'{self.number:02d}.json'
 
         if not self.json_location.parent.exists():
             self.json_location.parent.mkdir(parents=True)

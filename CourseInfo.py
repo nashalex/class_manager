@@ -27,6 +27,20 @@ class CourseInfo:
     professor: str
     website: str
 
+    @staticmethod
+    def get_all_CourseInfos():
+        """Get all the existing CourseInfos
+        Returns
+        -------
+        All the existing CourseInfos
+
+        """
+        paths = COURSE_JSON_DIR.glob('*.json')
+        infos = []
+        for p in paths:
+            infos.append[CourseInfo_from_json(p)]
+        return infos
+
     def __post_init__(self):
         self.identifier = f'{self.department[:4].upper()}{self.number}{self.institution[0].upper()}'
 
