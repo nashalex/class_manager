@@ -36,7 +36,7 @@ class CourseInfo:
 
         """
         # print({k: v for k, v in locals().items() if v})
-        filters = [(k, v) for k, v in locals().items() if v]
+        filters = {(k, v) for k, v in locals().items() if v}
         # print(filters)
         paths = COURSE_JSON_DIR.glob('*.json')
         infos = []
@@ -49,9 +49,30 @@ class CourseInfo:
         else:
             for p in paths:
                 ci = CourseInfo.from_json(p)
-                if filters <= list(vars(ci).items()):
+                if filters <= set(vars(ci).items()):
                     infos.append(ci)
         return infos
+
+    @staticmethod
+    def existing_vals(key: str, year: int = None, semester: str = None, institution: str = None):
+        """Get all the existing values, with the passed filters.
+
+        Parameters
+        ----------
+        key : str
+        year : TODO, optional
+        semester : TODO, optional
+        institution : TODO, optional
+
+        Returns
+        -------
+        TODO
+
+        """
+        infos = CourseInfo.get_all_CourseInfos(year, semester, institution)
+        if key not in infos[0]:
+            raise Exception(f'{key} is not a valid course attribute!')
+        return list({info[key] for info in infos})
 
     @staticmethod
     def from_json(file_path: Path or str):
@@ -131,6 +152,12 @@ class CourseInfo:
 
     def __str__(self):
         return f'{self.identifier[:-1]}: {self.title}'
+
+    def __getitem__(self, item):
+        return vars(self)[item]
+
+    def __contains__(self, key):
+        return key in vars(self)
 
 
 if __name__ == "__main__":

@@ -250,4 +250,5 @@ if __name__ == "__main__":
     t3 = TexFile.from_path(loc2)
     print("seeing how to generate from a location")
     print(t3)
+    print(TexFile.get_course_files('COMP332D'))
     # print(get_course_files('COMP332D', FileType.assignment))

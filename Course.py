@@ -70,11 +70,17 @@ class Course:
         # filtered = filter(lambda f: f.file_type == file_type, self.files)
         # return max(filtered, key=lambda f: f.number).number
 
-    def new_tex_file(self, file_type: FT):
-        TFile(course_identifier=self.info.identifier,
-              file_type=file_type, number=1 + self.largest_file_number(file_type))
+    def new_tex_file(self, file_type: FT, number: int = None, title: str = None):
+        if number is None:
+            number = 1 + self.largest_file_number(file_type)
+        f = TFile(course_identifier=self.info.identifier,
+                  file_type=file_type, number=number, title=title)
         # self.update_master(
         self.update_active_files()
+        return f
+
+    def get_possible_titles(self, file_type: FT):
+        return list({f.title for f in self.files if f.file_type == file_type})
 
     # def update_master(self, files: list[TFile] or TFile):
         # if type(files) is TFile:
