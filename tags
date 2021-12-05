@@ -9,83 +9,112 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	/a0dd591f/
+C	GUI.py	/^from Course import Course as C$/;"	x	nameref:unknown:Course
+C	Manager.py	/^from Course import Course as C$/;"	x	nameref:unknown:Course
+CI	Course.py	/^from CourseInfo import CourseInfo as CI$/;"	x	nameref:unknown:CourseInfo
+CI	GUI.py	/^from CourseInfo import CourseInfo as CI$/;"	x	nameref:unknown:CourseInfo
+CI	SettingsManager.py	/^            from CourseInfo import CourseInfo as CI$/;"	x	member:Settings.__init__	file:	nameref:unknown:CourseInfo
+CM	GUI.py	/^from Manager import CourseManager as CM$/;"	x	nameref:unknown:CourseManager
 COURSE_DIR	Settings.py	/^COURSE_DIR = root_dir \/ 'Courses'$/;"	v
 COURSE_JSON_DIR	CourseInfo.py	/^COURSE_JSON_DIR = JSON_DIR \/ 'courses'$/;"	v
-ClasesDescriptor	Manager.py	/^class ClasesDescriptor(object):$/;"	c
-Course	Course.py	/^class Course(object):$/;"	c
+Course	Course.py	/^class Course:$/;"	c
+CourseGUIManager	GUI.py	/^class CourseGUIManager:$/;"	c
 CourseInfo	CourseInfo.py	/^class CourseInfo:$/;"	c
-CourseInfo_from_identifier	CourseInfo.py	/^def CourseInfo_from_identifier(identifier: str) -> CourseInfo:$/;"	f	typeref:typename:CourseInfo
-CourseInfo_from_json	CourseInfo.py	/^def CourseInfo_from_json(file_path: Path or str):$/;"	f
+CourseManager	Manager.py	/^class CourseManager(object):$/;"	c
+CoursesDescriptor	Manager.py	/^class CoursesDescriptor(object):$/;"	c
 FILE_JSON_DIR	File.py	/^FILE_JSON_DIR = JSON_DIR \/ 'files'$/;"	v
 FT	Course.py	/^from File import FileType as FT$/;"	x	nameref:unknown:FileType
 FileType	File.py	/^class FileType(Enum):$/;"	c
 JSON_DIR	Settings.py	/^JSON_DIR = root_dir \/ 'json'$/;"	v
-Manager	Manager.py	/^class Manager(object):$/;"	c
 SETTINGS_LOCATION	Settings.py	/^SETTINGS_LOCATION = root_dir \/ 'settings.json'$/;"	v
-Settings	Settings.py	/^class Settings:$/;"	c
+Settings	SettingsManager.py	/^class Settings:$/;"	c
 TFile	Course.py	/^from File import TexFile as TFile$/;"	x	nameref:unknown:TexFile
 TexFile	File.py	/^class TexFile(object):$/;"	c
-TexFile_from_json	File.py	/^def TexFile_from_json(file_path: Path or str):$/;"	f
-TexFile_from_path	File.py	/^def TexFile_from_path(texfile_path):$/;"	f
 TexFilesDescriptor	Course.py	/^class TexFilesDescriptor:$/;"	c
-__delete__	Manager.py	/^    def __delete__(self, instance):$/;"	m	class:ClasesDescriptor
+__contains__	Course.py	/^    def __contains__(self, item):$/;"	m	class:Course
+__contains__	Manager.py	/^    def __contains__(self, identifier):$/;"	m	class:CourseManager
 __eq__	CourseInfo.py	/^    def __eq__(self, other):$/;"	m	class:CourseInfo
 __eq__	File.py	/^    def __eq__(self, other):$/;"	m	class:TexFile
 __get__	Course.py	/^    def __get__(self, owner, objtype=None):$/;"	m	class:TexFilesDescriptor
-__get__	Manager.py	/^    def __get__(self, instance, owner):$/;"	m	class:ClasesDescriptor
-__init__	Course.py	/^    def __init__(self, course_info: CourseInfo.CourseInfo or Path or str):$/;"	m	class:Course
-__init__	Manager.py	/^    def __init__(self):$/;"	m	class:Manager
-__init__	Settings.py	/^    def __init__(self):$/;"	m	class:Settings
+__get__	Manager.py	/^    def __get__(self, instance, owner):$/;"	m	class:CoursesDescriptor
+__getitem__	Course.py	/^    def __getitem__(self, item):$/;"	m	class:Course
+__getitem__	Manager.py	/^    def __getitem__(self, item):$/;"	m	class:CourseManager
+__init__	Course.py	/^    def __init__(self, info: CourseInfo.CourseInfo or Path or str):$/;"	m	class:Course
+__init__	GUI.py	/^    def __init__(self):$/;"	m	class:CourseGUIManager
+__init__	Manager.py	/^    def __init__(self, year: str = None, semester: str = None, institution: str = None):$/;"	m	class:CourseManager
+__init__	SettingsManager.py	/^    def __init__(self):$/;"	m	class:Settings
+__iter__	Manager.py	/^    def __iter__(self):$/;"	m	class:CourseManager
 __lt__	CourseInfo.py	/^    def __lt__(self, other):$/;"	m	class:CourseInfo
 __lt__	File.py	/^    def __lt__(self, other):$/;"	m	class:TexFile
 __post_init__	CourseInfo.py	/^    def __post_init__(self):$/;"	m	class:CourseInfo
 __post_init__	File.py	/^    def __post_init__(self):$/;"	m	class:TexFile
-__set__	Manager.py	/^    def __set__(self, instance, value):$/;"	m	class:ClasesDescriptor
 __str__	Course.py	/^    def __str__(self):$/;"	m	class:Course
 __str__	CourseInfo.py	/^    def __str__(self):$/;"	m	class:CourseInfo
 __str__	File.py	/^    def __str__(self):$/;"	m	class:TexFile
 _ct	CourseInfo.py	/^    def _ct(self):$/;"	m	class:CourseInfo
 active	File.py	/^    active: bool = True$/;"	v	class:TexFile	typeref:typename:bool
+add_course	GUI.py	/^    def add_course(self):$/;"	m	class:CourseGUIManager
 assignment	File.py	/^    assignment = 2$/;"	v	class:FileType
 c	Course.py	/^    c = Course('COMP332D')$/;"	v
+change_semester	Manager.py	/^    def change_semester(self, semester):$/;"	m	class:CourseManager
+change_year	Manager.py	/^    def change_year(self, year):$/;"	m	class:CourseManager
 ci	CourseInfo.py	/^    ci = CourseInfo(year=2021, semester='Fall', department='COMP', number=332,$/;"	v
-ci2	CourseInfo.py	/^    ci2 = CourseInfo_from_json(ci.json_location)$/;"	v
+ci2	CourseInfo.py	/^    ci2 = CourseInfo.from_json(ci.json_location)$/;"	v
+courses	Manager.py	/^    courses = CoursesDescriptor()$/;"	v	class:CourseManager
+create_buttons	GUI.py	/^    def create_buttons(self):$/;"	m	class:CourseGUIManager
 ct	File.py	/^    def ct(self):$/;"	m	class:TexFile
 files	Course.py	/^    files = TexFilesDescriptor()$/;"	v	class:Course
 formatted_date	File.py	/^    def formatted_date(self):$/;"	m	class:TexFile
-get_all_CourseInfos	CourseInfo.py	/^    def get_all_CourseInfos():$/;"	m	class:CourseInfo
+from_identifier	CourseInfo.py	/^    def from_identifier(identifier: str):$/;"	m	class:CourseInfo
+from_json	CourseInfo.py	/^    def from_json(file_path: Path or str):$/;"	m	class:CourseInfo
+from_json	File.py	/^    def from_json(file_path: Path or str):$/;"	m	class:TexFile
+from_path	File.py	/^    def from_path(texfile_path):$/;"	m	class:TexFile
+get_CourseInfo_args	Course.py	/^    def get_CourseInfo_args():$/;"	m	class:Course
+get_all_CourseInfos	CourseInfo.py	/^    def get_all_CourseInfos(year: int = None, semester: str = None, institution: str = None):$/;"	m	class:CourseInfo
+get_all_Courses	Course.py	/^    def get_all_Courses(year: int = None, semester: str = None, institution: str = None):$/;"	m	class:Course
 get_course_directory	CourseInfo.py	/^def get_course_directory(identifier: str) -> Path:$/;"	f	typeref:typename:Path
-get_course_files	Course.py	/^def get_course_files(course_identifier: str,$/;"	f	typeref:typename:list[Path]
-get_courses	Manager.py	/^def get_courses():$/;"	f
+get_course_files	File.py	/^    def get_course_files(course_identifier: str,$/;"	m	class:TexFile	typeref:typename:list[Path]
+get_courses	Manager.py	/^    def get_courses(self):$/;"	m	class:CourseManager
 get_file	Course.py	/^    def get_file(self, ft: FT, number: int, title: str = ''):$/;"	m	class:Course
 get_file_directory	File.py	/^def get_file_directory(course_identifier: str, file_type: FileType, title: str = ''):$/;"	f
 get_json_location	CourseInfo.py	/^def get_json_location(identifier: str) -> Path:$/;"	f	typeref:typename:Path
 get_latex_header	File.py	/^    def get_latex_header(self):$/;"	m	class:TexFile
 get_location	File.py	/^def get_location(course_identifier: str, file_type: FileType, number: int, title: str = '', JSON/;"	f
+get_possible_args	Manager.py	/^    def get_possible_args(self):$/;"	m	class:CourseManager
+get_possible_vals	Manager.py	/^    def get_possible_vals(self, key):$/;"	m	class:CourseManager
+get_settings	SettingsManager.py	/^def get_settings():$/;"	f
 get_syllabus	CourseInfo.py	/^    def get_syllabus(self):$/;"	m	class:CourseInfo
+gm	GUI.py	/^    gm = CourseGUIManager()$/;"	v
 header_pattern	File.py	/^header_pattern = re.compile(r'\\\\(.*?){(\\d+)}{(\\w{3} \\d{2})}(?:{(.*?)})?')$/;"	v
 homework	File.py	/^    homework = 1$/;"	v	class:FileType
 include_str	File.py	/^    def include_str(self):$/;"	m	class:TexFile
 json_directory	File.py	/^def json_directory(course_identifier: str, file_type: FileType) -> Path:$/;"	f	typeref:typename:Path
 largest_file_number	Course.py	/^    def largest_file_number(self, file_type: FT):$/;"	m	class:Course
-load_json	Settings.py	/^    def load_json(self):$/;"	m	class:Settings
+load_json	SettingsManager.py	/^    def load_json(self):$/;"	m	class:Settings
 loc	File.py	/^    loc = t.json_location$/;"	v
 loc2	File.py	/^    loc2 = t.location$/;"	v
+m	Manager.py	/^    m = CourseManager(2021)$/;"	v
+main_loop	GUI.py	/^    def main_loop(self):$/;"	m	class:CourseGUIManager
 make_master	Course.py	/^    def make_master(self):$/;"	m	class:Course
+make_window	GUI.py	/^    def make_window(self):$/;"	m	class:CourseGUIManager
 new_tex_file	Course.py	/^    def new_tex_file(self, file_type: FT):$/;"	m	class:Course
 note	File.py	/^    note = 0$/;"	v	class:FileType
-parse_header	File.py	/^def parse_header(header: str):$/;"	f
+parse_header	File.py	/^    def parse_header(header: str):$/;"	m	class:TexFile
+refresh_vals	GUI.py	/^    def refresh_vals(self):$/;"	m	class:CourseGUIManager
 root_dir	Settings.py	/^root_dir = Path.home() \/ 'class_man'$/;"	v
 set_active	File.py	/^    def set_active(self, Bool: bool = True):$/;"	m	class:TexFile
 set_active_files	Course.py	/^    def set_active_files(self, to_activate=TFile or list[TFile]$/;"	m	class:Course
+set_settings	SettingsManager.py	/^def set_settings(last_year=None, last_course_identifier=None, last_semester=None):$/;"	f
+sg	GUI.py	/^import PySimpleGUI as sg$/;"	I	nameref:module:PySimpleGUI
 subdir_name	File.py	/^def subdir_name(file_type: FileType, title: str = '') -> str:$/;"	f	typeref:typename:str
 t	File.py	/^    t = TexFile("COMP332D", FileType.homework, 1)$/;"	v
-t2	File.py	/^    t2 = TexFile_from_json(loc)$/;"	v
-t3	File.py	/^    t3 = TexFile_from_path(loc2)$/;"	v
+t2	File.py	/^    t2 = TexFile.from_json(loc)$/;"	v
+t3	File.py	/^    t3 = TexFile.from_path(loc2)$/;"	v
 title	File.py	/^    title: str = ''$/;"	v	class:TexFile	typeref:typename:str
 type_and_num	File.py	/^    def type_and_num(self):$/;"	m	class:TexFile
 update_active_files	Course.py	/^    def update_active_files(self):$/;"	m	class:Course
+update_course_buttons	GUI.py	/^    def update_course_buttons(self):$/;"	m	class:CourseGUIManager
 write_file	File.py	/^    def write_file(self):$/;"	m	class:TexFile
 write_json	CourseInfo.py	/^    def write_json(self):$/;"	m	class:CourseInfo
 write_json	File.py	/^    def write_json(self):$/;"	m	class:TexFile
-write_json	Settings.py	/^    def write_json(self):$/;"	m	class:Settings
+write_json	SettingsManager.py	/^    def write_json(self):$/;"	m	class:Settings

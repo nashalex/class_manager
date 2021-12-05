@@ -75,43 +75,6 @@ def get_file_directory(course_identifier: str, file_type: FileType, title: str =
     return course_dir / subdir_name(file_type, title)
 
 
-def parse_header(header: str):
-    # \[file_type]{number}{date}{title}
-    match = header_pattern.match(header)
-    file_type = FileType[match[1]]
-    number = int(match[2])
-    file_date = datetime.strptime(
-        match[3], '%b %d').date().replace(year=date.today().year)
-    title = match[4] if match[4] else ''
-    return {'file_type': file_type, 'number': number, 'file_date': file_date, 'title': title}
-
-
-def TexFile_from_path(texfile_path):
-    """Create and return an existing TexFile from the location of a tex file
-    """
-    # TODO change the way this works so that it pulls year from JSON file if it exists
-    # TODO add something to Course.py that calls this on all files in a course directory, updating the relevant json files
-    course_identifier = texfile_path.parent.parent.name
-    with open(texfile_path, 'r') as file:
-        header = file.readline().strip()
-    header_vars = parse_header(header)
-    tf = TexFile(course_identifier=course_identifier, **header_vars)
-    return tf
-
-
-def TexFile_from_json(file_path: Path or str):
-    """Create a new TexFile from a JSON file.
-    Parameters
-    ----------
-        file_path: Path or str:
-            The path to the JSON file.
-    """
-    with open(file_path, 'r') as f:
-        file_vars = json.load(f)
-
-    return TexFile(**file_vars)
-
-
 @total_ordering
 @dataclass
 class TexFile(object):
@@ -123,6 +86,69 @@ class TexFile(object):
     title: str = ''
     file_date: date or str = date.today()
     active: bool = True
+
+    @staticmethod
+    def get_course_files(course_identifier: str,
+                         file_types: FileType or list[FileType] = FileType) -> list[Path]:
+        """Returns a list all TexFiles of a specified course
+
+        Parameters
+        ----------
+            course_identifier: str
+                The course to get files from.
+            file_types: FileType or list[FileType]
+                Limit search to only the files of type FileType.
+                Default: all file types.
+        """
+
+        if type(file_types) is FileType:
+            file_types = [file_types]
+        files = []
+        for ft in file_types:
+            directory = json_directory(course_identifier, ft)
+            json_paths = list(directory.glob('*'))
+            files.extend([TexFile.from_json(jp) for jp in json_paths])
+        return files
+
+    @staticmethod
+    def parse_header(header: str):
+        """
+        Parse the header string of a TexFile
+        """
+        # \[file_type]{number}{date}{title}
+        match = header_pattern.match(header)
+        file_type = FileType[match[1]]
+        number = int(match[2])
+        file_date = datetime.strptime(
+            match[3], '%b %d').date().replace(year=date.today().year)
+        title = match[4] if match[4] else ''
+        return {'file_type': file_type, 'number': number, 'file_date': file_date, 'title': title}
+
+    @staticmethod
+    def from_path(texfile_path):
+        """Create and return an existing TexFile from the location of a tex file
+        """
+        # TODO change the way this works so that it pulls year from JSON file if it exists
+        # TODO add something to Course.py that calls this on all files in a course directory, updating the relevant json files
+        course_identifier = texfile_path.parent.parent.name
+        with open(texfile_path, 'r') as file:
+            header = file.readline().strip()
+        header_vars = TexFile.parse_header(header)
+        tf = TexFile(course_identifier=course_identifier, **header_vars)
+        return tf
+
+    @staticmethod
+    def from_json(file_path: Path or str):
+        """Create a new TexFile from a JSON file.
+        Parameters
+        ----------
+            file_path: Path or str:
+                The path to the JSON file.
+        """
+        with open(file_path, 'r') as f:
+            file_vars = json.load(f)
+
+        return TexFile(**file_vars)
 
     def __post_init__(self):
         """Create a new TexFile object """
@@ -218,10 +244,10 @@ if __name__ == "__main__":
     print(t)
     loc = t.json_location
     print(loc)
-    t2 = TexFile_from_json(loc)
+    t2 = TexFile.from_json(loc)
     print(t2)
     loc2 = t.location
-    t3 = TexFile_from_path(loc2)
+    t3 = TexFile.from_path(loc2)
     print("seeing how to generate from a location")
     print(t3)
     # print(get_course_files('COMP332D', FileType.assignment))

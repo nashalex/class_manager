@@ -8,7 +8,7 @@ COURSE_JSON_DIR = JSON_DIR / 'courses'
 
 
 def get_json_location(identifier: str) -> Path:
-    return COURSE_JSON_DIR / identifier
+    return COURSE_JSON_DIR / f'{identifier}.json'
 
 
 def get_course_directory(identifier: str) -> Path:
@@ -20,31 +20,81 @@ def get_course_directory(identifier: str) -> Path:
 class CourseInfo:
     year: int
     semester: str
+    institution: str
     department: str
     number: int
     title: str
-    institution: str
     professor: str
     website: str
 
     @staticmethod
-    def get_all_CourseInfos():
+    def get_all_CourseInfos(year: int = None, semester: str = None, institution: str = None):
         """Get all the existing CourseInfos
         Returns
         -------
         All the existing CourseInfos
 
         """
+        # print({k: v for k, v in locals().items() if v})
+        filters = [(k, v) for k, v in locals().items() if v]
+        # print(filters)
         paths = COURSE_JSON_DIR.glob('*.json')
         infos = []
-        for p in paths:
-            infos.append[CourseInfo_from_json(p)]
+
+        if len(filters) == 0:
+            for p in paths:
+                # fj = CourseInfo.from_json(p)
+                # print(fj)
+                infos.append(CourseInfo.from_json(p))
+        else:
+            for p in paths:
+                ci = CourseInfo.from_json(p)
+                if filters <= list(vars(ci).items()):
+                    infos.append(ci)
         return infos
+
+    @staticmethod
+    def from_json(file_path: Path or str):
+        """Create a new CourseInfo from a JSON Path.
+
+        Parameters
+        ----------
+        file_path : Path | str
+            Path of a CourseInfo JSON file.
+
+        Returns
+        -------
+        A ``CourseInfo`` object.
+
+        """
+        with open(file_path, 'r') as f:
+            course_vars = json.load(f)
+
+        return CourseInfo(**course_vars)
+
+    @staticmethod
+    def from_identifier(identifier: str):
+        """Create a new ``CourseInfo`` from a course identifier
+
+        Parameters
+        ----------
+        identifier : str
+            The identifier of a ``CourseInfo``.
+
+        Returns
+        -------
+        TODO
+
+        """
+        file_path = get_json_location(identifier)
+        return CourseInfo.from_json(file_path)
 
     def __post_init__(self):
         self.identifier = f'{self.department[:4].upper()}{self.number}{self.institution[0].upper()}'
 
         self.directory = get_course_directory(self.identifier)
+        if not self.directory.exists():
+            self.directory.mkdir(parents=True)
         self.json_location = get_json_location(self.identifier)
         self.write_json()
 
@@ -62,6 +112,12 @@ class CourseInfo:
             json_vars = deepcopy(vars(self))
             for k in ('identifier', 'directory', 'json_location'):
                 json_vars.pop(k, None)
+            for k, v in json_vars.items():
+                if type(v) is str:
+                    if v.isnumeric():
+                        json_vars[k] = int(v)
+                    else:
+                        json_vars[k] = v.strip()
             json.dump(json_vars, file)
 
     def _ct(self):
@@ -77,22 +133,10 @@ class CourseInfo:
         return f'{self.identifier[:-1]}: {self.title}'
 
 
-def CourseInfo_from_json(file_path: Path or str):
-    file_path = str(file_path)
-    with open(file_path, 'r') as f:
-        course_vars = json.load(f)
-
-    return CourseInfo(**course_vars)
-
-
-def CourseInfo_from_identifier(identifier: str) -> CourseInfo:
-    file_path = get_json_location(identifier)
-    return CourseInfo_from_json(file_path)
-
-
 if __name__ == "__main__":
     ci = CourseInfo(year=2021, semester='Fall', department='COMP', number=332,
                     title='Analysis of Algorithms', institution='Dickinson', professor='Richard Forrester', website='')
     print(ci)
-    ci2 = CourseInfo_from_json(ci.json_location)
+    ci2 = CourseInfo.from_json(ci.json_location)
     print(ci2)
+    print(CourseInfo.get_all_CourseInfos())

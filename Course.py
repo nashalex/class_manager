@@ -1,69 +1,69 @@
 import CourseInfo
+from CourseInfo import CourseInfo as CI
 from pathlib import Path
 from Settings import JSON_DIR, COURSE_DIR, root_dir
 import File
 from File import FileType as FT
 from File import TexFile as TFile
-
-
-def get_course_files(course_identifier: str,
-                     file_types: FT or list[FT] = FT) -> list[Path]:
-    """Returns a list all TexFiles of a specified course
-
-    Parameters
-    ----------
-        course_identifier: str
-            The course to get files from.
-        file_types: FileType or list[FileType]
-            Limit search to only the files of type FileType.
-            Default: all file types.
-    """
-
-    if type(file_types) is FT:
-        file_types = [file_types]
-    files = []
-    for ft in file_types:
-        directory = File.json_directory(course_identifier, ft)
-        json_paths = list(directory.glob('*'))
-        files.extend([File.TexFile_from_json(jp) for jp in json_paths])
-    return files
+import inspect
 
 
 class TexFilesDescriptor:
     """File Descriptor class that retrives files"""
 
     def __get__(self, owner, objtype=None):
-        return sorted(get_course_files(owner.course_info.identifier))
+        return sorted(TFile.get_course_files(owner.info.identifier))
 
 
-class Course(object):
+class Course:
     """Stores a Course and its Files"""
 
-    course_info: CourseInfo.CourseInfo
+    info: CourseInfo.CourseInfo
     files = TexFilesDescriptor()
 
-    def __init__(self, course_info: CourseInfo.CourseInfo or Path or str):
+    @staticmethod
+    def get_CourseInfo_args():
+        """Get all the parameters needed for the CourseInfo constructor
+        Returns
+        -------
+        TODO
+
+        """
+        # first one is going to be 'self', which causes problems
+        return [p.name for p in inspect.signature(CI.__init__).parameters.values()][1:]
+
+    @ staticmethod
+    def get_all_Courses(year: int = None, semester: str = None, institution: str = None):
+        """Get all the existing Courses
+        Returns
+        -------
+        All the existing CourseInfos
+
+        """
+        return [Course(ci) for ci in CI.get_all_CourseInfos(**locals())]
+
+    def __init__(self, info: CourseInfo.CourseInfo or Path or str):
         """Create a new Course Object
 
         Parameters
         ----------
-        course_info : A CourseInfo.CourseInfo or Path or str
+        info : A CourseInfo.CourseInfo or Path or str
             A ``CourseInfo`` object, or the identifier of one, or the path to the JSON file of one.
         """
 
-        if type(course_info) is CourseInfo.CourseInfo:
-            self.course_info = course_info
-        elif Path(course_info).exists():
-            self.course_info = CourseInfo.CourseInfo_from_json(course_info)
+        if type(info) is CI:
+            self.info = info
+        elif Path(info).exists():
+            self.info = CI.from_json(info)
         else:
-            self.course_info = CourseInfo.CourseInfo_from_identifier(
-                course_info)
-        self.master_file_location = self.course_info.directory / 'master.tex'
-        self.active_files_file = self.course_info.directory / 'active_files.tex'
+            self.info = CI.from_identifier(
+                info)
+        self.master_file_location = self.info.directory / 'master.tex'
+        self.active_files_file = self.info.directory / 'active_files.tex'
         self.make_master()
 
     def __str__(self):
-        return str(self.course_info)
+        return str(self.info)
 
     def largest_file_number(self, file_type: FT):
         return max((f.number for f in self.files if f.file_type == file_type or 0), default=0)
@@ -71,7 +71,7 @@ class Course(object):
         # return max(filtered, key=lambda f: f.number).number
 
     def new_tex_file(self, file_type: FT):
-        TFile(course_identifier=self.course_info.identifier,
+        TFile(course_identifier=self.info.identifier,
               file_type=file_type, number=1 + self.largest_file_number(file_type))
         # self.update_master(
         self.update_active_files()
@@ -120,7 +120,7 @@ class Course(object):
         with open(self.master_file_location, 'w') as file:
             file.write(r'''\documentclass[a4paper]{article}
 \input{../preamble.tex}
-''' f'\\title{{{self.course_info.title}}}' r'''
+''' f'\\title{{{self.info.title}}}' r'''
 \PassOptionsToPackage{hidelinks}{hyperref}
 \author{Alex Nash}
 \date{\vspace{-3ex}}
@@ -128,6 +128,12 @@ class Course(object):
     \maketitle
     \input{active_files.tex}
 \end{document} ''')
+
+    def __getitem__(self, item):
+        return vars(self.info)[item]
+
+    def __contains__(self, item):
+        return item in vars(self.info)
 
 
 if __name__ == "__main__":
@@ -142,3 +148,5 @@ if __name__ == "__main__":
 
     c.set_active_files([(FT.homework, 14),
                        (FT.homework, 15)])
+
+    print(Course.get_CourseInfo_args())
