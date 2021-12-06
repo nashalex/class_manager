@@ -1,7 +1,9 @@
 import PySimpleGUI as sg
-from Course import Course as C
+from File import FileType as FT
 from CourseInfo import CourseInfo as CI
-from File import (TexFile as TFile, FileType as FT)
+from Course import Course as C
+
+
 import subprocess
 
 
@@ -13,9 +15,9 @@ class GUI:
         self.make_course_window()
 
     def make_course_window(self):
-        institutions = CI.existing_vals('institution')
-        years = CI.existing_vals('year', institution=self.institution)
-        semesters = CI.existing_vals(
+        institutions = C.existing_vals('institution')
+        years = C.existing_vals('year', institution=self.institution)
+        semesters = C.existing_vals(
             'semester', year=self.year, institution=self.institution)
         courses = C.get_all_Courses(
             year=self.year, semester=self.semester, institution=self.institution)
@@ -56,9 +58,9 @@ class GUI:
 
     def add_course(self):
         ncl = []
-        for arg in C.get_CourseInfo_args():
+        for arg in CI.get_args():
             ncl.append([sg.Text(f'Enter {arg}:')])
-            vals = CI.existing_vals(arg)
+            vals = C.existing_vals(arg)
             print(f'\n\nPRINTING VALS: {vals}')
             default = vals[0] if len(vals) > 0 else ''
             # if len(vals) > 0:
@@ -74,9 +76,8 @@ class GUI:
         print(v)
 
     @staticmethod
-    def make_file_tab(identifier, file_type: FT):
-        ft_files = sorted(TFile.get_course_files(
-            identifier, file_type))
+    def make_file_tab(course: C, file_type: FT):
+        ft_files = course.get_files(file_type)
         ft_layout = [
             [sg.Listbox(values=[f for f in ft_files],
                         select_mode='extended', key=file_type.name, size=(30, 25))]
@@ -84,12 +85,11 @@ class GUI:
         return sg.Tab(file_type.name, ft_layout)
 
     def course_manager(self, course):
-        identifier = course.info.identifier
         layout = [
             [sg.TabGroup(
                 [
                     [GUI.make_file_tab(
-                        identifier, file_type) for file_type in FT]
+                        course, file_type) for file_type in FT]
                 ], key='tab')
              ],
             [sg.Button('open'), sg.Button('new file')]
@@ -98,15 +98,15 @@ class GUI:
         print(v)
         if v['tab'] is not None:
             file_type = FT[v['tab'][:-1]]
-        if e == 'open':
-            active_files = v[file_type.name]
-            print(file_type)
-            course.set_active_files(active_files)
-            subprocess.call(('open', active_files[0].location))
-        elif e == 'new file':
-            GUI.new_tex_file(course, file_type)
-            # self.new_tex_file(
-            # course.new
+            if e == 'open':
+                active_files = v[file_type.name]
+                print(file_type)
+                course.set_active_files(active_files)
+                subprocess.call(('open', active_files[0].location))
+            elif e == 'new file':
+                GUI.new_tex_file(course, file_type)
+                # self.new_tex_file(
+                # course.new
 
     @staticmethod
     def new_tex_file(course, file_type):

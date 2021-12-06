@@ -2,19 +2,19 @@ from datetime import date
 import re
 from functools import total_ordering
 from dataclasses import dataclass
-from enum import Enum
+from enum import (Enum, EnumMeta)
 from copy import deepcopy
 from pathlib import Path
 import json
 import CourseInfo
-from Settings import JSON_DIR, COURSE_DIR, root_dir
+from Settings import JSON_DIR
 from datetime import datetime
 
 FILE_JSON_DIR = JSON_DIR / 'files'
 
 header_pattern = re.compile(r'\\(.*?){(\d+)}{(\w{3} \d{2})}(?:{(.*?)})?')
 
-
+@total_ordering
 class FileType(Enum):
     """Enum for the different types of supported LaTeX files
     """
@@ -22,6 +22,8 @@ class FileType(Enum):
     homework = 1
     assignment = 2
 
+    def __lt__(self, other):
+        return self.value < other.value
 
 def subdir_name(file_type: FileType, title: str = '') -> str:
     """Get the subdirectory name of a specific FileType
@@ -71,8 +73,9 @@ def get_location(course_identifier: str, file_type: FileType, number: int, title
 def get_file_directory(course_identifier: str, file_type: FileType, title: str = ''):
     """Get the directory of all files of a course, of type FileType"""
 
-    course_dir = CourseInfo.get_course_directory(course_identifier)
+    course_dir = CourseInfo.CourseInfo.get_course_directory(course_identifier)
     return course_dir / subdir_name(file_type, title)
+
 
 
 @total_ordering
@@ -87,28 +90,7 @@ class TexFile(object):
     file_date: date or str = date.today()
     active: bool = True
 
-    @staticmethod
-    def get_course_files(course_identifier: str,
-                         file_types: FileType or list[FileType] = FileType) -> list[Path]:
-        """Returns a list all TexFiles of a specified course
 
-        Parameters
-        ----------
-            course_identifier: str
-                The course to get files from.
-            file_types: FileType or list[FileType]
-                Limit search to only the files of type FileType.
-                Default: all file types.
-        """
-
-        if type(file_types) is FileType:
-            file_types = [file_types]
-        files = []
-        for ft in file_types:
-            directory = json_directory(course_identifier, ft)
-            json_paths = list(directory.glob('*'))
-            files.extend([TexFile.from_json(jp) for jp in json_paths])
-        return files
 
     @staticmethod
     def parse_header(header: str):
@@ -223,17 +205,45 @@ class TexFile(object):
         return self.ct() == ct
 
     def __lt__(self, other):
-        ct = other.ct() if type(other) is TexFile else other
+        ct = other.ct()
+        if not isinstance(other, TexFile):
+            print(f'{other} is NOT a TexFile. it is a {type(other)}')
         return self.ct() < ct
 
     def __str__(self):
-        s = f'{self.course_identifier} {self.file_type.name} {self.number}'
+        s = f'{self.file_type.name} {self.number}'
+        # s = f'{self.course_identifier} {self.file_type.name} {self.number}'
         if len(self.title) > 0:
             s += f': {self.title}'
         if self.active:
             s += '  (active)'
         return s
 
+def get_course_files(course_identifier: str, file_types: list[FileType] or FileType or EnumMeta = None) -> list[TexFile]:
+    """Returns a list all TexFiles of a specified course
+
+    Parameters
+    ----------
+        course_identifier: str
+            The course to get files from.
+        file_types: FileType or list[FileType]
+            Limit search to only the files of type FileType.
+            Default: all file types.
+    """
+    print(f'{type(file_types) = }')
+    if type(file_types) is FileType:
+        file_types = [file_types]
+    elif file_types is None:
+        file_types = FileType
+    files = []
+    for ft in file_types:
+        directory = json_directory(course_identifier, ft)
+        json_paths = list(directory.glob('*'))
+        files.extend([TexFile.from_json(jp) for jp in json_paths])
+    print(files)
+    for f in files:
+        print(f'{type(f) = }')
+    return sorted(files)
 
 if __name__ == "__main__":
     t = TexFile("COMP332D", FileType.homework, 1)
