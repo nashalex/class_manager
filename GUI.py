@@ -1,12 +1,11 @@
 import PySimpleGUI as sg
-from Manager import CourseManager as CM
 from Course import Course as C
 from CourseInfo import CourseInfo as CI
 from File import (TexFile as TFile, FileType as FT)
 import subprocess
 
 
-class CourseGUIManager:
+class GUI:
     def __init__(self):
         self.year = None
         self.semester = None
@@ -85,24 +84,11 @@ class CourseGUIManager:
         return sg.Tab(file_type.name, ft_layout)
 
     def course_manager(self, course):
-        # c = C(info)
         identifier = course.info.identifier
-        # notes_files = sorted(TFile.get_course_files(identifier, FT.note))
-        # notes_layout = [
-        # [sg.Listbox(values=[str(f) for f in notes_files],
-        # select_mode='extended', key='notes', size=(30, 25))]
-        # ]
-        # hw_files = sorted(TFile.get_course_files(identifier, FT.homework))
-        # hw_layout = [
-        # [sg.Listbox(values=[str(f) for f in hw_files],
-        # select_mode='extended', key='notes', size=(30, 25))]
-        # ]
-        # layout = [[sg.TabGroup([[sg.Tab('notes', notes_layout), sg.Tab('hw', hw_layout)]])
-        # ]]
         layout = [
             [sg.TabGroup(
                 [
-                    [CourseGUIManager.make_file_tab(
+                    [GUI.make_file_tab(
                         identifier, file_type) for file_type in FT]
                 ], key='tab')
              ],
@@ -115,12 +101,14 @@ class CourseGUIManager:
         if e == 'open':
             active_files = v[file_type.name]
             print(file_type)
+            course.set_active_files(active_files)
             subprocess.call(('open', active_files[0].location))
         elif e == 'new file':
-            CourseGUIManager.new_tex_file(course, file_type)
+            GUI.new_tex_file(course, file_type)
             # self.new_tex_file(
             # course.new
 
+    @staticmethod
     def new_tex_file(course, file_type):
         print(file_type)
         print(course.largest_file_number(file_type))
@@ -142,4 +130,4 @@ class CourseGUIManager:
 
 
 if __name__ == "__main__":
-    gm = CourseGUIManager()
+    gm = GUI()

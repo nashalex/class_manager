@@ -11,8 +11,12 @@ def get_json_location(identifier: str) -> Path:
     return COURSE_JSON_DIR / f'{identifier}.json'
 
 
-def get_course_directory(identifier: str) -> Path:
-    return COURSE_DIR / identifier
+def get_course_directory(identifier: str, semester: str = None, year: int = None) -> Path:
+    if (semester, year) == (None, None):
+        info = CourseInfo.from_identifier(identifier)
+        semester, year = info.semester, info.year
+
+    return COURSE_DIR / f'{semester}{year}' / identifier
 
 
 @total_ordering
@@ -113,7 +117,8 @@ class CourseInfo:
     def __post_init__(self):
         self.identifier = f'{self.department[:4].upper()}{self.number}{self.institution[0].upper()}'
 
-        self.directory = get_course_directory(self.identifier)
+        self.directory = get_course_directory(
+            self.identifier, self.semester, self.year)
         if not self.directory.exists():
             self.directory.mkdir(parents=True)
         self.json_location = get_json_location(self.identifier)
