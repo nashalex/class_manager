@@ -59,9 +59,9 @@ class Course:
             self.info.identifier, self.info.semester, self.info.year)
         if not self.directory.exists():
             self.directory.mkdir(parents=True)
-        self.master_file_location = self.directory / 'master.tex'
+        self.main_file_location = self.directory / 'main.tex'
         self.active_files_file = self.directory / 'active_files.tex'
-        self.make_master()
+        self.make_main_file()
         self.make_preamble()
         self.update_active_files()
 
@@ -76,7 +76,6 @@ class Course:
             number = 1 + self.largest_file_number(file_type)
         f = TFile(course_identifier=self.info.identifier,
                   file_type=file_type, number=number, title=title)
-        # self.update_master(
         self.update_active_files()
         return f
 
@@ -117,10 +116,10 @@ class Course:
             for active_file in active_files:
                 f.write(f'\\include{{{active_file.include_str()}}}\n')
 
-    def make_master(self):
-        if self.master_file_location.exists():
+    def make_main_file(self):
+        if self.main_file_location.exists():
             return
-        with open(self.master_file_location, 'w') as file:
+        with open(self.main_file_location, 'w') as file:
             file.write(r'''\documentclass[a4paper]{article}
 \input{../../preamble.tex}
 ''' f'\\title{{{self.info.title}}}' r'''
